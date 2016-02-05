@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Choropleth</title>
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+<script src='http://code.jquery.com/jquery-2.2.0.min.js'></script>
+
+</head>
+<body>
+<style>
+ .legend label,
+.legend span {
+  display:block;
+  float: left;
+  height:15px;
+  width:20%;
+  margin-right:5px;
+  border: 1px solid #000;
+        }
+</style>
+
+<div id="map" style="width: 900px;height: 500px"></div>
+
+<script>
+
+var map = L.map('map').setView([9, 8], 6);
+
+var CartoDB_DarkMatter = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a><a href="http://mapsnigeriainitiative.wordpress.com">mapsni</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+	subdomains: 'abcd',
+	maxZoom: 19
+}).addTo(map);
+
+function onEachFeature(feature, layer){
+if(feature.properties&&feature.properties.census_Nam){
+layer.bindPopup(feature.properties.census_Nam);}}
+
+
+$.getJSON("population.geojson", function(data){
+L.geoJson(data, {onEachFeature,
+style: function(feature, layer){
+var fill, fill = feature.properties.census_Tot;
+if (fill > 7000000) fillColor = '#d95f0e';
+else if (fill > 4000000 ) fillColor = "#fec44f";
+else if (fill > 500000 ) fillColor = "#fff7bc";
+return {fillColor: fillColor, color:'black', fillOpacity: 0.8}
+}}).addTo(map);
+});
+
+
+</script>
+<div id='legend' style='position:absolute;bottom:100px;right:120px;float:right;background:#eeeeee;padding:15px'>
+  <strong>Human Population</strong>
+	<ul class= 'legend labels'>
+   <span style='background: #d95f0e;'></span>>7M<br>
+    <span style='background:#fec44f;'></span>>4M<br>
+      <span style='background:#fff7bc;'></span>>0.5M<br>
+    		</ul>
+        <div class='legend-source'>Source: <a href="www.mapsnigeriainitiative.wordpress.com">NPC Census 2006</a></div>
+</div>
+</body>
+</html>
