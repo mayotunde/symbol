@@ -38,7 +38,7 @@ if(feature.properties&&feature.properties.census_Nam){
 layer.bindPopup(feature.properties.census_Nam);}}
 
 
-$.getJSON("population.geojson", function(data){
+$.getJSON("https://cdn.rawgit.com/mayotunde/symbol/master/population.geojson", function(data){
 L.geoJson(data, {onEachFeature,
 style: function(feature, layer){
 var fill, fill = feature.properties.census_Tot;
